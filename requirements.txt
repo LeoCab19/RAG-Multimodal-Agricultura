@@ -1,0 +1,25 @@
+# --- Frameworks Web y API ---
+fastapi
+uvicorn
+pydantic
+requests
+streamlit
+
+# --- Procesamiento de Documentos e Imágenes ---
+pymupdf
+Pillow
+numpy
+
+# --- NLP y Embeddings ---
+torch
+transformers
+sentence-transformers
+accelerate
+rank_bm25
+
+# --- Base de Datos Vectorial ---
+chromadb
+
+# --- Evaluación y Utilidades ---
+tqdm
+python-dotenv
