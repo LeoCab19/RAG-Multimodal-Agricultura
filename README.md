@@ -1,8 +1,8 @@
-# 🌾 Asistente Agrícola RAG Multimodal
+# Asistente Agrícola RAG Multimodal
 
 Sistema de consulta técnica agrícola con búsqueda híbrida, re-ranking y generación multimodal usando VLM.
 
-## 🎯 Características
+## Características
 
 - **Búsqueda Híbrida**: Vectorial (E5) + BM25 fusionados con RRF
 - **Re-ranking**: Cross-encoder para máxima precisión
@@ -10,13 +10,13 @@ Sistema de consulta técnica agrícola con búsqueda híbrida, re-ranking y gene
 - **Streaming**: Respuestas en tiempo real con memoria conversacional
 - **Evaluación**: Métricas de Fidelidad, Relevancia y Recall
 
-## 🛠️ Stack
+## Stack
 
 **Modelos**: `intfloat/multilingual-e5-large` (embeddings) • `BAAI/bge-reranker-v2-m3` (reranker) • `Qwen2-VL-2B` (generación)  
 **Backend**: FastAPI + ChromaDB + BM25  
 **Frontend**: Streamlit
 
-## 📦 Instalación
+## Instalación
 
 ```bash
 # Dependencias
@@ -33,7 +33,7 @@ TOP_K=10
 MAX_TOKENS_LLM=10000
 ```
 
-## 🚀 Uso
+## Uso
 
 ### 1. Ingestar PDFs
 ```bash
@@ -52,7 +52,7 @@ python api_rag_multimodal1.py  # http://127.0.0.1:8000
 streamlit run streamli_front.py  # http://localhost:8501
 ```
 
-## ⚙️ Arquitectura
+## Arquitectura
 
 ```
 Usuario → Query Expansion → [Búsqueda Vectorial + BM25] → RRF → 
@@ -64,7 +64,30 @@ Re-ranking → Mejor Doc + Imagen → VLM (streaming) → Respuesta
 - Índice BM25 pre-cargado en RAM (startup)
 - Prefijos E5: `query:` para búsquedas, `passage:` para docs
 
-## 📊 Evaluación
+### Evaluación de Recuperación (Retrieval)
+Para garantizar la precisión del asistente, se evaluaron tres configuraciones de segmentación de documentos (chunking). El objetivo fue maximizar la relevancia del primer resultado recuperado.
+
+Primero se ha tenido que utiliza un script para hacer el chunk pequeño y el chunk mediano.
+Hemos utilizado el siguiente script:
+```bash
+python preparan_evaluacion.py
+```
+Despues para el resultado se tiene que ejecutar el siguiente script:
+
+```bash
+python evaluador_retrivel.py
+```
+### Tabla Comparativa de Configuraciones RAG
+
+| Configuración | Tokens | Overlap | Hit Rate @3 | MRR @3 | Latencia |
+|---------------|--------|---------|-------------|--------|----------|
+| **Pequeño** | 256 | 20 | 1.0 | 1.0 | Baja |
+| **Medio** | 512 | 50 | 1.0 | 1.0 | Media |
+| **Grande** | 1024 | 100 | 1.0 | 0.5 | Alta |
+
+**Recomendación**: Configuración **Media** (512 tokens, overlap 50) ofrece el mejor balance precisión/velocidad.
+
+## Evaluación
 
 ### Crear Golden Set
 ```bash
@@ -89,7 +112,7 @@ Ejemplo:
 🔍 Recall:      100.0%
 ```
 
-## 🔧 Configuración
+##  Configuración
 
 ### Ajustar Rendimiento
 ```python
@@ -109,7 +132,7 @@ TOP_K = 5  # Reducir carga
 ```
 ### Tambien se puede utilizar con GPU
 
-## 📝 Formato de Datos
+## Formato de Datos
 
 **ChromaDB**:
 ```json
@@ -126,7 +149,7 @@ TOP_K = 5  # Reducir carga
 {"query": "¿Control de pulgón?", "ground_truth": "Jabón 2%...", "relevant_ids": ["manual_p23_b5"]}
 ```
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 | Error | Solución |
 |-------|----------|
@@ -136,7 +159,7 @@ TOP_K = 5  # Reducir carga
 | Baja fidelidad | `temperature=0.05`, fortalecer system prompt |
 | Bajo recall | Verificar prefijos E5, aumentar `TOP_K=20` |
 
-## 📈 Flujo de Búsqueda Híbrida
+## Flujo de Búsqueda Híbrida
 
 1. **Query Expansion**: `"araña"` → `"Información técnica sobre... araña"`
 2. **Vectorial**: Embedding query → ChromaDB (cosine similarity)
